@@ -3,10 +3,15 @@ const path = require('path');
 const express = require('express');
 const PORT = process.env.PORT || 3001; // sets an environment variable
 const app = express();
+
 // parse incoming string or array data
 app.use(express.urlencoded({ extended: true }));
 // parse incoming JSON data
 app.use(express.json());
+
+// middleware with express.static method that instructs the server to make files in public folder static resources
+app.use(express.static('public'));
+
 const { animals } = require('./data/animals');
 
 
@@ -126,6 +131,20 @@ app.post('/api/animals', (req, res) => {
     }
 });
 
+// add get route that responds with an HTML page to display in the browser
+app.get('/', (req, res) => { // '/' brings us to root route of the server
+    res.sendFile(path.join(__dirname, './public/index.html'));
+});
+
+// add route that serves animal html
+app.get('/animals', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/animals.html'));
+});
+
+// add route that serves zookeeper html
+app.get('/zookeepers', (req, res) => {
+    res.sendFile(path.join(__dirname, './public/zookeepers.html'));
+  });
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
